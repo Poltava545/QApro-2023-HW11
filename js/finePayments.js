@@ -32,7 +32,53 @@ alert "Номер не співпадає" або "Сума не співпад�
 Якщо валідація проходить успішно, то виконати оплату,
  тобто вам потрібно видалити обєкт з DB
  */
+
+
 buttonSubmit.addEventListener('click',payFine);
 function payFine(){
+    // Отримання значень з полів форми
+    let enteredFineNumber = fineNumber.value;
+    let enteredPassport = passport.value;
+    let enteredCreditCardNumber = creditCardNumber.value;
+    let enteredCvv = cvv.value;
+    let enteredAmount = parseFloat(amount.value);
 
+    // Валідація номера та суми
+    let matchingFine = DB.find(fine => fine.номер === enteredFineNumber && fine.сума === enteredAmount);
+    if (!matchingFine) {
+        alert("Номер не співпадає або сума не співпадає");
+        return;
+    }
+
+    // Валідація паспортних даних
+    let passportRegex = /^[А-ЩЬЮЯҐЄІЇ]{2}\d{6}$/;
+    if (!passportRegex.test(enteredPassport)) {
+        alert("Не вірний паспортний номер");
+        return;
+    }
+
+    // Валідація номера кредитної карти
+    let creditCardRegex = /^\d{16}$/;
+    if (!creditCardRegex.test(enteredCreditCardNumber)) {
+        alert("Не вірна кредитна картка");
+        return;
+    }
+
+    // Валідація CVV
+    let cvvRegex = /^\d{3}$/;
+    if (!cvvRegex.test(enteredCvv)) {
+        alert("Не вірний CVV");
+        return;
+    }
+
+    // Якщо валідація пройшла успішно, видалити штраф з DB
+    let indexToRemove = DB.findIndex(fine => fine.номер === enteredFineNumber && fine.сума === enteredAmount);
+    if (indexToRemove !== -1) {
+        DB.splice(indexToRemove, 1);
+        alert("Штраф оплачено успішно!");
+        populateFinesTable(data.finesData); // Оновити таблицю після оплати
+    } else {
+        alert("Помилка видалення штрафу з бази даних");
+    }
 }
+
