@@ -20,7 +20,6 @@ function searchFines(searchKey){
      */
 
 
-    
      let searchResult = [];
 
      if (searchKey) {
