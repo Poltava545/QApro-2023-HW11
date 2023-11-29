@@ -20,8 +20,19 @@ function searchFines(searchKey){
      */
 
 
-    return [
-        {номер: '001', тип: 'Перевищення швидкості', сума: 100, дата: '2023-01-15'}
-    ];
-}
+    
+     let searchResult = [];
 
+     if (searchKey) {
+         searchResult = DB.filter(fine => 
+             fine.номер.includes(searchKey) || 
+             fine.тип.toLowerCase().includes(searchKey.toLowerCase())
+         );
+
+ } else {
+         // Якщо searchKey порожній, повертаємо весь список
+          return DB;
+         }
+
+ return searchResult;
+}
